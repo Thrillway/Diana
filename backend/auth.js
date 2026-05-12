@@ -1,8 +1,13 @@
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = process.env;
+
+function getSecret() {
+  const s = process.env.JWT_SECRET;
+  if (!s) throw new Error('JWT_SECRET env variable is not set');
+  return s;
+}
 
 function signToken(payload) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '12h' });
+  return jwt.sign(payload, getSecret(), { expiresIn: '12h' });
 }
 
 function verifyToken(req, res, next) {
@@ -11,7 +16,7 @@ function verifyToken(req, res, next) {
     return res.status(401).json({ error: 'Не авторизован' });
   }
   try {
-    req.user = jwt.verify(auth.slice(7), JWT_SECRET);
+    req.user = jwt.verify(auth.slice(7), getSecret());
     next();
   } catch {
     return res.status(401).json({ error: 'Токен недействителен' });

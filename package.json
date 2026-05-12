@@ -1,0 +1,11 @@
+{
+  "name": "student-cabinet",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node backend/server.js",
+    "postinstall": "cd backend && npm install"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
