@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет Вадима | English Studies</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-container.show {
+            display: flex;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-box button:hover {
+            background: #764ba2;
+        }
+
+        .login-error {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .container.show {
+            display: block;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tab-btn:hover {
+            border-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .card h4 {
+            color: #667eea;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .calendar-header {
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            grid-column: 1 / -1;
+            font-size: 18px;
+        }
+
+        .day-name {
+            text-align: center;
+            font-weight: bold;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: default;
+            background: #f9f9f9;
+            color: #999;
+        }
+
+        .calendar-day.has-class {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .payment-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box label {
+            display: block;
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .info-box .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .checklist {
+            margin-top: 15px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .checklist-item:hover {
+            background: #f0f0f0;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checklist-item input[type="checkbox"]:checked + label {
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .subcategory {
+            margin-left: 20px;
+            padding-left: 15px;
+            border-left: 2px solid #ddd;
+        }
+
+        .subcategory-title {
+            font-weight: 600;
+            color: #667eea;
+            padding: 10px 0;
+            margin-top: 10px;
+        }
+
+        .progress-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .progress-label {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .edit-mode .checklist-item {
+            cursor: default;
+        }
+
+        .edit-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .edit-section.show {
+            display: block;
+        }
+
+        .edit-section textarea, .edit-section input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .edit-btn, .save-btn, .cancel-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+            transition: background 0.3s;
+        }
+
+        .save-btn {
+            background: #27ae60;
+        }
+
+        .save-btn:hover {
+            background: #229954;
+        }
+
+        .cancel-btn {
+            background: #95a5a6;
+        }
+
+        .cancel-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .edit-btn:hover {
+            background: #764ba2;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .results-table th, .results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .results-table th {
+            background: #f0f0f0;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .results-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .task-type {
+            display: inline-block;
+            background: #e8eaf6;
+            color: #667eea;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-info {
+                text-align: center;
+                margin-top: 15px;
+            }
+
+            .payment-info {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-day {
+                font-size: 12px;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container show" id="loginContainer">
+        <div class="login-box">
+            <h2>🔐 Вход в кабинет</h2>
+            <div class="login-error" id="loginError">Неверный пароль</div>
+            <input type="password" id="passwordInput" placeholder="Введите пароль" onkeypress="if(event.key==='Enter') login()">
+            <button onclick="login()">Вход</button>
+            <p style="margin-top: 20px; color: #999; font-size: 12px;">Подсказка: для редактирования используйте пароль</p>
+        </div>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <div class="header">
+            <div>
+                <h1>📚 Личный кабинет</h1>
+                <p style="color: #999; margin-top: 5px;">Английский язык</p>
+            </div>
+            <div class="user-info">
+                <p><strong>Студент:</strong> Вадим</p>
+                <p><strong>Начало обучения:</strong> май 2026</p>
+                <div class="level-badge">Уровень: B1+</div>
+                <button class="logout-btn" onclick="logout()">Выход</button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">📊 Обзор</button>
+            <button class="tab-btn" onclick="switchTab('schedule')">📅 Расписание</button>
+            <button class="tab-btn" onclick="switchTab('payment')">💰 Оплата</button>
+            <button class="tab-btn" onclick="switchTab('grammar')">📖 Грамматика</button>
+            <button class="tab-btn" onclick="switchTab('vocabulary')">📝 Лексика</button>
+            <button class="tab-btn" onclick="switchTab('strategies')">🎯 Стратегии</button>
+            <button class="tab-btn" onclick="switchTab('tests')">✅ Пробники</button>
+        </div>
+
+        <!-- ОБЗОР -->
+        <div class="tab-content active" id="overview">
+            <div class="card">
+                <h3>📊 Общий прогресс</h3>
+                <div class="progress-section">
+                    <div class="progress-label">Прогресс обучения: <strong id="progressPercent">0%</strong></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%">
+                            <span id="progressText"></span>
+                        </div>
+                    </div>
+                    <p style="color: #666; font-size: 14px; text-align: center;">
+                        Пройдено тем: <strong id="completedTopics">0</strong> из <strong id="totalTopics">0</strong>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📌 Быстрая информация</h3>
+                <div class="payment-info">
+                    <div class="info-box">
+                        <label>Следующее занятие</label>
+                        <div class="value" id="nextClassDisplay">Пятница, 16 мая</div>
+                        <div style="color: #667eea; font-weight: bold; margin-top: 5px;" id="nextClassTimeDisplay">13:00 МСК</div>
+                    </div>
+                    <div class="info-box">
+                        <label>Осталось занятий в абонементе</label>
+                        <div class="value" id="remainingClassesDisplay">1</div>
+                        <div style="color: #999; font-size: 12px; margin-top: 5px;" id="totalClassesDisplay">из 4 занятий</div>
+                    </div>
+                </div>
+                
+                <button class="edit-btn" onclick="toggleOverviewEdit()" id="editOverviewBtn" style="display: none; margin-top: 15px;">✏️ Редактировать</button>
+                <div class="edit-section" id="overviewEditSection">
+                    <h4>Редактировать информацию</h4>
+                    <label>Следующее занятие:</label>
+                    <input type="text" id="nextClassInput" placeholder="Например: Пятница, 16 мая">
+                    
+                    <label>Время занятия:</label>
+                    <input type="text" id="nextClassTimeInput" placeholder="Например: 13:00 МСК">
+                    
+                    <label>Осталось занятий:</label>
+                    <input type="number" id="remainingClassesInput" min="0" placeholder="1">
+                    
+                    <label>Всего в абонементе:</label>
+                    <input type="number" id="totalClassesInput" min="0" placeholder="4">
+                    
+                    <button class="save-btn" onclick="saveOverviewEdit()">Сохранить</button>
+                    <button class="cancel-btn" onclick="toggleOverviewEdit()">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- РАСПИСАНИЕ -->
+        <div class="tab-content" id="schedule">
+            <div class="card">
+                <h3>📅 Расписание занятий на май 2026</h3>
+                <div class="calendar" id="calendar"></div>
+                <p style="color: #999; font-size: 12px; margin-top: 20px;">
+                    ⏰ Время занятий: <strong id="scheduleTimeDisplay">Понедельник и пятница в 13:00 МСК</strong>
+                </p>
+                <p style="color: #999; font-size: 12px; margin-top: 5px;" id="classesInfoDisplay">
+                    ✅ Пройденные занятия: 3 (1, 4, 11 мая)<br>
+                    ⬜ Предстоящие: 16 мая
+                </p>
+                <button class="edit-btn" onclick="toggleScheduleEdit()" id="editScheduleBtn" style="display: none; margin-top: 15px;">✏️ Редактировать расписание</button>
+                <button class="edit-btn" onclick="toggleCalendarEdit()" id="editCalendarBtn" style="display: none; margin-top: 15px;">✏️ Редактировать дни занятий</button>
+                
+                <div class="edit-section" id="scheduleEditSection">
+                    <h4>Редактировать расписание</h4>
+                    <label>Время занятий:</label>
+                    <input type="text" id="scheduleTimeInput" placeholder="Например: Понедельник и пятница в 13:00 МСК">
+                    
+                    <label>Информация о занятиях (заполните через Enter):</label>
+                    <textarea id="classesInfoInput" placeholder="Например: ✅ Пройденные занятия: 3 (1, 4, 11 мая)&#10;⬜ Предстоящие: 16 мая" style="height: 100px;"></textarea>
+                    
+                    <button class="save-btn" onclick="saveScheduleEdit()">Сохранить</button>
+                    <button class="cancel-btn" onclick="toggleScheduleEdit()">Отмена</button>
+                </div>
+
+                <div class="edit-section" id="calendarEditSection">
+                    <h4>Редактировать дни занятий</h4>
+                    <p style="color: #666; margin-bottom: 15px;">Введите номера дней в мае, когда проходят занятия (через запятую)</p>
+                    <label>Дни занятий:</label>
+                    <input type="text" id="classesInput" placeholder="Например: 1, 4, 11, 15" style="margin-bottom: 10px;">
+                    
+                    <button class="save-btn" onclick="saveCalendarEdit()">Сохранить</button>
+                    <button class="cancel-btn" onclick="toggleCalendarEdit()">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ОПЛАТА -->
+        <div class="tab-content" id="payment">
+            <div class="card">
+                <h3>💰 Информация об оплате</h3>
+                <div class="payment-info">
+                    <div class="info-box">
+                        <label>Текущий абонемент</label>
+                        <div class="value" id="subscriptionTypeDisplay">4 занятия</div>
+                        <div style="color: #999; font-size: 12px; margin-top: 5px;" id="subscriptionDescDisplay">Парные занятия</div>
+                    </div>
+                    <div class="info-box">
+                        <label>Осталось занятий</label>
+                        <div class="value" style="color: #e74c3c;" id="remainingPaymentDisplay">1</div>
+                        <div style="color: #999; font-size: 12px; margin-top: 5px;" id="totalPaymentDisplay">из 4</div>
+                    </div>
+                    <div class="info-box">
+                        <label>Стоимость одного занятия</label>
+                        <div class="value" id="priceDisplay">1 200 ₽</div>
+                        <div style="color: #999; font-size: 12px; margin-top: 5px;">в парах</div>
+                    </div>
+                    <div class="info-box">
+                        <label>Дата следующей оплаты</label>
+                        <div class="value" id="nextPaymentDisplay">15 мая 2026</div>
+                        <div style="color: #667eea; font-size: 12px; margin-top: 5px;">🔔 Скоро!</div>
+                    </div>
+                </div>
+
+                <h4 style="margin-top: 30px;">История платежей</h4>
+                <table class="results-table" id="paymentHistoryTable">
+                    <tr>
+                        <th>Дата</th>
+                        <th>Сумма</th>
+                        <th>Абонемент</th>
+                    </tr>
+                    <tr>
+                        <td>28 апреля 2026</td>
+                        <td><strong>4 800 ₽</strong></td>
+                        <td>4 занятия</td>
+                    </tr>
+                </table>
+
+                <button class="edit-btn" onclick="togglePaymentEdit()" id="editPaymentBtn" style="display: none; margin-top: 15px;">✏️ Редактировать</button>
+                <div class="edit-section" id="paymentEditSection">
+                    <h4>Редактировать информацию об оплате</h4>
+                    <label>Тип абонемента:</label>
+                    <input type="text" id="subscriptionTypeInput" placeholder="4 занятия">
+                    
+                    <label>Описание абонемента:</label>
+                    <input type="text" id="subscriptionDescInput" placeholder="Парные занятия">
+                    
+                    <label>Осталось занятий:</label>
+                    <input type="number" id="remainingPaymentInput" min="0" placeholder="1">
+                    
+                    <label>Всего в абонементе:</label>
+                    <input type="number" id="totalPaymentInput" min="0" placeholder="4">
+                    
+                    <label>Стоимость одного занятия:</label>
+                    <input type="text" id="priceInput" placeholder="1 200 ₽">
+                    
+                    <label>Дата следующей оплаты:</label>
+                    <input type="text" id="nextPaymentInput" placeholder="15 мая 2026">
+                    
+                    <button class="save-btn" onclick="savePaymentEdit()">Сохранить</button>
+                    <button class="cancel-btn" onclick="togglePaymentEdit()">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ГРАММАТИКА -->
+        <div class="tab-content" id="grammar">
+            <div class="card">
+                <h3>📖 Грамматический кодификатор</h3>
+                <div id="grammarChecklist"></div>
+            </div>
+        </div>
+
+        <!-- ЛЕКСИКА -->
+        <div class="tab-content" id="vocabulary">
+            <div class="card">
+                <h3>📝 Лексический кодификатор</h3>
+                <div id="vocabularyChecklist"></div>
+            </div>
+        </div>
+
+        <!-- СТРАТЕГИИ -->
+        <div class="tab-content" id="strategies">
+            <div class="card">
+                <h3>🎯 Стратегии выполнения заданий</h3>
+                <div id="strategiesChecklist"></div>
+            </div>
+        </div>
+
+        <!-- ПРОБНИКИ -->
+        <div class="tab-content" id="tests">
+            <div class="card">
+                <h3>✅ Результаты пробников</h3>
+                <p style="color: #999; margin-bottom: 20px;">Пробные тесты не начинались. Планируется с июня 2026.</p>
+                <div id="testResults"></div>
+                <button class="edit-btn" onclick="toggleTestEdit()">+ Добавить результат пробника</button>
+                <div class="edit-section" id="testEditSection">
+                    <h4>Добавить новый результат пробника</h4>
+                    <input type="text" id="testMonth" placeholder="Месяц (например: июнь)">
+                    <textarea id="testResults" placeholder="Результаты теста (запишите результаты)"></textarea>
+                    <button class="save-btn" onclick="saveTestResult()">Сохранить</button>
+                    <button class="cancel-btn" onclick="toggleTestEdit()">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'teacher'; // Пароль для редактирования
+
+        let isAdmin = false;
+        let data = {
+            grammar: {},
+            vocabulary: {},
+            strategies: {},
+            tests: [],
+            classSchedule: [1, 4, 11, 16],
+            overview: {
+                nextClass: 'Пятница, 16 мая',
+                nextClassTime: '13:00 МСК',
+                remainingClasses: 1,
+                totalClasses: 4
+            },
+            schedule: {
+                time: 'Понедельник и пятница в 13:00 МСК',
+                info: '✅ Пройденные занятия: 3 (1, 4, 11 мая)\n⬜ Предстоящие: 16 мая'
+            },
+            payment: {
+                subscriptionType: '4 занятия',
+                subscriptionDesc: 'Парные занятия',
+                remaining: 1,
+                total: 4,
+                price: '1 200 ₽',
+                nextPayment: '15 мая 2026'
+            }
+        };
+
+        const grammarTopics = {
+            'Типы предложений': [
+                'Present Simple Tense',
+                'Past Simple Tense',
+                'Future Simple Tense',
+                'Present Continuous Tense',
+                'Past Continuous Tense',
+                'Future Continuous Tense',
+                'Present Perfect Tense',
+                'Past Perfect Tense',
+                'Present Perfect Continuous Tense'
+            ],
+            'Пассивный залог': [
+                'Present Simple Passive',
+                'Past Simple Passive',
+                'Present Perfect Passive',
+                'Present Continuous Passive',
+                'Past Continuous Passive',
+                'Future Simple Passive'
+            ],
+            'Выражение будущего': [
+                'to be going to',
+                'Future Simple (will)',
+                'Present Continuous для будущего'
+            ],
+            'Модальные глаголы': [
+                'can / be able to',
+                'could',
+                'must / have to',
+                'may',
+                'might',
+                'should',
+                'shall',
+                'would',
+                'will',
+                'need'
+            ],
+            'Условные предложения (Conditionals)': [
+                'Zero Conditional',
+                'First Conditional',
+                'Second Conditional',
+                'Third Conditional',
+                'Mixed Conditional'
+            ],
+            'Wish и Preference': [
+                'I wish...',
+                'I prefer...',
+                'I\'d prefer...',
+                'I\'d rather...',
+                'You\'d better...'
+            ],
+            'Used to / Be used to': [
+                'used to (привычка в прошлом)',
+                'be used to (привыкнуть)',
+                'get used to (приспособиться)'
+            ],
+            'Количество': [
+                'many / much',
+                'little / a little',
+                'few / a few',
+                'a lot of'
+            ],
+            'Сложное предложение': [
+                'Complex Subject',
+                'Complex Object'
+            ],
+            'Сложносочинённые предложения': [
+                'and / but / or'
+            ],
+            'Сложноподчинённые предложения': [
+                'because',
+                'if / when / where / what / why / how',
+                'Определительные придаточные (who, which, that)',
+                'whoever / whatever / however / whenever'
+            ]
+        };
+
+        const vocabularyTopics = {
+            'A': 'Повседневная жизнь семьи. Межличностные отношения в семье, с друзьями и знакомыми. Конфликтные ситуации, их предупреждение и разрешение',
+            'Б': 'Внешность и характеристика человека, литературного персонажа',
+            'В': 'Здоровый образ жизни и забота о здоровье: режим труда и отдыха, спорт, сбалансированное питание, посещение врача. Отказ от вредных привычек',
+            'Г': 'Школьное образование, школьная жизнь, школьные праздники. Школьные социальные сети. Переписка с зарубежными сверстниками. Взаимоотношения в школе. Проблемы и решения. Подготовка к выпускным экзаменам',
+            'Д': 'Современный мир профессий. Проблема выбора профессии. Альтернативы в продолжении образования',
+            'Е': 'Место иностранного языка в повседневной жизни и профессиональной деятельности в современном мире. Роль иностранного языка в планах на будущее',
+            'Ж': 'Молодёжь в современном обществе. Ценностные ориентиры. Участие молодёжи в жизни общества. Досуг молодёжи: увлечения и интересы. Любовь и дружба',
+            'З': 'Покупки: одежда, обувь и продукты питания. Карманные деньги. Молодёжная мода',
+            'И': 'Роль спорта в современной жизни: виды спорта, экстремальный спорт, спортивные соревнования, Олимпийские игры',
+            'К': 'Деловое общение: особенности делового общения, деловая этика, деловая переписка, публичное выступление',
+            'Л': 'Туризм. Виды отдыха. Экотуризм. Путешествия по России и зарубежным странам. Виртуальные путешествия',
+            'М': 'Вселенная и человек. Природа. Проблемы экологии. Защита окружающей среды. Стихийные бедствия. Проживание в городской/сельской местности',
+            'Н': 'Средства массовой информации: пресса, телевидение, радио, Интернет, социальные сети',
+            'О': 'Технический прогресс: перспективы и последствия. Современные средства коммуникации (пресса, телевидение, Интернет, социальные сети и другие). Интернет-безопасность',
+            'П': 'Проблемы современной цивилизации',
+            'Р': 'Родная страна и страна/страны изучаемого языка: географическое положение, столица, крупные города, регионы; система образования; достопримечательности, культурные особенности (национальные и популярные праздники, знаменательные даты, традиции, обычаи); страницы истории. Россия и мир: вклад России в мировую культуру, науку, технику',
+            'С': 'Выдающиеся люди родной страны и стран/стран изучаемого языка: государственные деятели, учёные, писатели, поэты, художники, композиторы, путешественники, спортсмены, актёры и т.д.'
+        };
+
+        const strategiesTopics = {
+            'Устная часть': {
+                'Задание 1': 'Чтение текста',
+                'Задание 2': 'Вопросы',
+                'Задание 3': 'Интервью',
+                'Задание 4': 'Монолог'
+            },
+            'Письменная часть': {
+                'Задание 1': 'Высказывания',
+                'Задание 2': 'True/False/Not stated',
+                'Задания 3-9': 'Интервью',
+                'Задание 10': 'Заголовки',
+                'Задание 11': 'Фрагменты предложений',
+                'Задания 12-18': 'Чтение текста',
+                'Задания 19-24': 'Словообразование',
+                'Задания 25-29': 'Словообразование (часть 2)',
+                'Задания 30-36': 'Множественный выбор',
+                'Задание 37': 'Электронное письмо',
+                'Задание 38': 'Эссе'
+            }
+        };
+
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                document.getElementById('loginContainer').classList.remove('show');
+                document.getElementById('mainContainer').classList.add('show');
+                loadData();
+                renderAllChecklists();
+                showEditButtons();
+            } else if (password === '') {
+                isAdmin = false;
+                document.getElementById('loginContainer').classList.remove('show');
+                document.getElementById('mainContainer').classList.add('show');
+                loadData();
+                renderAllChecklists();
+                hideEditButtons();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function showEditButtons() {
+            document.getElementById('editOverviewBtn').style.display = 'inline-block';
+            document.getElementById('editScheduleBtn').style.display = 'inline-block';
+            document.getElementById('editCalendarBtn').style.display = 'inline-block';
+            document.getElementById('editPaymentBtn').style.display = 'inline-block';
+        }
+
+        function hideEditButtons() {
+            document.getElementById('editOverviewBtn').style.display = 'none';
+            document.getElementById('editScheduleBtn').style.display = 'none';
+            document.getElementById('editCalendarBtn').style.display = 'none';
+            document.getElementById('editPaymentBtn').style.display = 'none';
+        }
+
+        function logout() {
+            isAdmin = false;
+            document.getElementById('loginContainer').classList.add('show');
+            document.getElementById('mainContainer').classList.remove('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function toggleOverviewEdit() {
+            const section = document.getElementById('overviewEditSection');
+            if (!section.classList.contains('show')) {
+                document.getElementById('nextClassInput').value = data.overview.nextClass;
+                document.getElementById('nextClassTimeInput').value = data.overview.nextClassTime;
+                document.getElementById('remainingClassesInput').value = data.overview.remainingClasses;
+                document.getElementById('totalClassesInput').value = data.overview.totalClasses;
+            }
+            section.classList.toggle('show');
+        }
+
+        function saveOverviewEdit() {
+            data.overview.nextClass = document.getElementById('nextClassInput').value;
+            data.overview.nextClassTime = document.getElementById('nextClassTimeInput').value;
+            data.overview.remainingClasses = parseInt(document.getElementById('remainingClassesInput').value);
+            data.overview.totalClasses = parseInt(document.getElementById('totalClassesInput').value);
+            saveData();
+            displayOverviewData();
+            toggleOverviewEdit();
+        }
+
+        function displayOverviewData() {
+            document.getElementById('nextClassDisplay').textContent = data.overview.nextClass;
+            document.getElementById('nextClassTimeDisplay').textContent = data.overview.nextClassTime;
+            document.getElementById('remainingClassesDisplay').textContent = data.overview.remainingClasses;
+            document.getElementById('totalClassesDisplay').textContent = 'из ' + data.overview.totalClasses + ' занятий';
+        }
+
+        function toggleCalendarEdit() {
+            const section = document.getElementById('calendarEditSection');
+            if (!section.classList.contains('show')) {
+                document.getElementById('classesInput').value = data.classSchedule.join(', ');
+            }
+            section.classList.toggle('show');
+        }
+
+        function saveCalendarEdit() {
+            const input = document.getElementById('classesInput').value;
+            const days = input.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
+            data.classSchedule = days;
+            saveData();
+            renderCalendar();
+            toggleCalendarEdit();
+        }
+
+        function toggleScheduleEdit() {
+            const section = document.getElementById('scheduleEditSection');
+            if (!section.classList.contains('show')) {
+                document.getElementById('scheduleTimeInput').value = data.schedule.time;
+                document.getElementById('classesInfoInput').value = data.schedule.info;
+            }
+            section.classList.toggle('show');
+        }
+
+        function saveScheduleEdit() {
+            data.schedule.time = document.getElementById('scheduleTimeInput').value;
+            data.schedule.info = document.getElementById('classesInfoInput').value;
+            saveData();
+            displayScheduleData();
+            toggleScheduleEdit();
+        }
+
+        function displayScheduleData() {
+            document.getElementById('scheduleTimeDisplay').textContent = data.schedule.time;
+            document.getElementById('classesInfoDisplay').innerHTML = data.schedule.info.split('\n').join('<br>');
+        }
+
+        function togglePaymentEdit() {
+            const section = document.getElementById('paymentEditSection');
+            if (!section.classList.contains('show')) {
+                document.getElementById('subscriptionTypeInput').value = data.payment.subscriptionType;
+                document.getElementById('subscriptionDescInput').value = data.payment.subscriptionDesc;
+                document.getElementById('remainingPaymentInput').value = data.payment.remaining;
+                document.getElementById('totalPaymentInput').value = data.payment.total;
+                document.getElementById('priceInput').value = data.payment.price;
+                document.getElementById('nextPaymentInput').value = data.payment.nextPayment;
+            }
+            section.classList.toggle('show');
+        }
+
+        function savePaymentEdit() {
+            data.payment.subscriptionType = document.getElementById('subscriptionTypeInput').value;
+            data.payment.subscriptionDesc = document.getElementById('subscriptionDescInput').value;
+            data.payment.remaining = parseInt(document.getElementById('remainingPaymentInput').value);
+            data.payment.total = parseInt(document.getElementById('totalPaymentInput').value);
+            data.payment.price = document.getElementById('priceInput').value;
+            data.payment.nextPayment = document.getElementById('nextPaymentInput').value;
+            saveData();
+            displayPaymentData();
+            togglePaymentEdit();
+        }
+
+        function displayPaymentData() {
+            document.getElementById('subscriptionTypeDisplay').textContent = data.payment.subscriptionType;
+            document.getElementById('subscriptionDescDisplay').textContent = data.payment.subscriptionDesc;
+            document.getElementById('remainingPaymentDisplay').textContent = data.payment.remaining;
+            document.getElementById('totalPaymentDisplay').textContent = 'из ' + data.payment.total;
+            document.getElementById('priceDisplay').textContent = data.payment.price;
+            document.getElementById('nextPaymentDisplay').textContent = data.payment.nextPayment;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            updateProgress();
+        }
+
+        function initializeData() {
+            // Grammar
+            Object.keys(grammarTopics).forEach(category => {
+                grammarTopics[category].forEach(topic => {
+                    const key = `grammar_${category}_${topic}`;
+                    if (!data.grammar[key]) {
+                        data.grammar[key] = false;
+                    }
+                });
+            });
+
+            // Vocabulary
+            Object.keys(vocabularyTopics).forEach(letter => {
+                const key = `vocab_${letter}`;
+                if (!data.vocabulary[key]) {
+                    data.vocabulary[key] = false;
+                }
+            });
+
+            // Strategies
+            Object.keys(strategiesTopics).forEach(section => {
+                Object.keys(strategiesTopics[section]).forEach(task => {
+                    const key = `strategies_${section}_${task}`;
+                    if (!data.strategies[key]) {
+                        data.strategies[key] = false;
+                    }
+                });
+            });
+
+            saveData();
+        }
+
+        function renderAllChecklists() {
+            renderGrammarChecklist();
+            renderVocabularyChecklist();
+            renderStrategiesChecklist();
+            renderTestResults();
+            updateProgress();
+        }
+
+        function renderGrammarChecklist() {
+            const container = document.getElementById('grammarChecklist');
+            container.innerHTML = '';
+
+            Object.keys(grammarTopics).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'subcategory-title';
+                categoryDiv.textContent = category;
+                container.appendChild(categoryDiv);
+
+                const subcategoryDiv = document.createElement('div');
+                subcategoryDiv.className = 'subcategory';
+
+                grammarTopics[category].forEach(topic => {
+                    const key = `grammar_${category}_${topic}`;
+                    const checked = data.grammar[key] || false;
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'checklist-item';
+                    itemDiv.innerHTML = `
+                        <input type="checkbox" id="${key}" ${checked ? 'checked' : ''} 
+                               ${!isAdmin ? 'disabled' : ''} 
+                               onchange="updateGrammar('${key}')">
+                        <label for="${key}">${topic}</label>
+                    `;
+                    subcategoryDiv.appendChild(itemDiv);
+                });
+
+                container.appendChild(subcategoryDiv);
+            });
+        }
+
+        function renderVocabularyChecklist() {
+            const container = document.getElementById('vocabularyChecklist');
+            container.innerHTML = '';
+
+            Object.keys(vocabularyTopics).forEach(letter => {
+                const key = `vocab_${letter}`;
+                const checked = data.vocabulary[key] || false;
+                const description = vocabularyTopics[letter];
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'checklist-item';
+                itemDiv.innerHTML = `
+                    <input type="checkbox" id="${key}" ${checked ? 'checked' : ''} 
+                           ${!isAdmin ? 'disabled' : ''} 
+                           onchange="updateVocabulary('${key}')">
+                    <label for="${key}"><strong>${letter}</strong> — ${description}</label>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        function renderStrategiesChecklist() {
+            const container = document.getElementById('strategiesChecklist');
+            container.innerHTML = '';
+
+            Object.keys(strategiesTopics).forEach(section => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'subcategory-title';
+                sectionDiv.textContent = section;
+                container.appendChild(sectionDiv);
+
+                const subcategoryDiv = document.createElement('div');
+                subcategoryDiv.className = 'subcategory';
+
+                Object.keys(strategiesTopics[section]).forEach(task => {
+                    const description = strategiesTopics[section][task];
+                    const key = `strategies_${section}_${task}`;
+                    const checked = data.strategies[key] || false;
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'checklist-item';
+                    itemDiv.innerHTML = `
+                        <input type="checkbox" id="${key}" ${checked ? 'checked' : ''} 
+                               ${!isAdmin ? 'disabled' : ''} 
+                               onchange="updateStrategies('${key}')">
+                        <label for="${key}"><strong>${task}</strong> — ${description}</label>
+                    `;
+                    subcategoryDiv.appendChild(itemDiv);
+                });
+
+                container.appendChild(subcategoryDiv);
+            });
+        }
+
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+
+            // May 2026
+            const monthYear = 'май 2026';
+            const firstDay = new Date(2026, 4, 1); // May 1, 2026
+            const lastDay = new Date(2026, 4, 31);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+
+            const classesSchedule = {};
+            data.classSchedule.forEach(day => {
+                classesSchedule[day] = true;
+            });
+
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'calendar-header';
+            headerDiv.textContent = monthYear;
+            calendar.appendChild(headerDiv);
+
+            const dayNames = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
+            dayNames.forEach(day => {
+                const dayNameDiv = document.createElement('div');
+                dayNameDiv.className = 'day-name';
+                dayNameDiv.textContent = day;
+                calendar.appendChild(dayNameDiv);
+            });
+
+            // Empty cells
+            for (let i = 0; i < (startingDayOfWeek === 0 ? 6 : startingDayOfWeek - 1); i++) {
+                const emptyDiv = document.createElement('div');
+                calendar.appendChild(emptyDiv);
+            }
+
+            // Days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                dayDiv.textContent = day;
+
+                if (classesSchedule[day]) {
+                    dayDiv.classList.add('has-class');
+                    dayDiv.title = '13:00 МСК';
+                }
+
+                calendar.appendChild(dayDiv);
+            }
+        }
+
+        function updateGrammar(key) {
+            data.grammar[key] = !data.grammar[key];
+            saveData();
+            updateProgress();
+        }
+
+        function updateVocabulary(key) {
+            data.vocabulary[key] = !data.vocabulary[key];
+            saveData();
+            updateProgress();
+        }
+
+        function updateStrategies(key) {
+            data.strategies[key] = !data.strategies[key];
+            saveData();
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const grammarCount = Object.values(data.grammar).filter(v => v).length;
+            const vocabCount = Object.values(data.vocabulary).filter(v => v).length;
+            const strategiesCount = Object.values(data.strategies).filter(v => v).length;
+
+            const totalGrammar = Object.keys(data.grammar).length;
+            const totalVocab = Object.keys(data.vocabulary).length;
+            const totalStrategies = Object.keys(data.strategies).length;
+
+            const completed = grammarCount + vocabCount + strategiesCount;
+            const total = totalGrammar + totalVocab + totalStrategies;
+
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('completedTopics').textContent = completed;
+            document.getElementById('totalTopics').textContent = total;
+            document.getElementById('progressPercent').textContent = percent + '%';
+
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = percent + '%';
+            progressFill.textContent = percent > 10 ? percent + '%' : '';
+        }
+
+        function renderTestResults() {
+            const container = document.getElementById('testResults');
+            container.innerHTML = '';
+
+            if (data.tests.length === 0) {
+                container.innerHTML = '<p style="color: #999;">Результатов пробников пока нет</p>';
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.className = 'results-table';
+            table.innerHTML = `
+                <tr>
+                    <th>Месяц</th>
+                    <th>Результаты</th>
+                    <th></th>
+                </tr>
+            `;
+
+            data.tests.forEach((test, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${test.month}</strong></td>
+                    <td>${test.results}</td>
+                    <td><button class="tab-btn" style="padding: 5px 10px; font-size: 12px;" onclick="deleteTest(${index})">Удалить</button></td>
+                `;
+                table.appendChild(tr);
+            });
+
+            container.appendChild(table);
+        }
+
+        function toggleTestEdit() {
+            const section = document.getElementById('testEditSection');
+            section.classList.toggle('show');
+        }
+
+        function saveTestResult() {
+            const month = document.getElementById('testMonth').value;
+            const results = document.getElementById('testResults').value;
+
+            if (!month || !results) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            data.tests.push({ month, results });
+            saveData();
+            renderTestResults();
+            document.getElementById('testMonth').value = '';
+            document.getElementById('testResults').value = '';
+            toggleTestEdit();
+        }
+
+        function deleteTest(index) {
+            data.tests.splice(index, 1);
+            saveData();
+            renderTestResults();
+        }
+
+        function saveData() {
+            localStorage.setItem('studentData', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const stored = localStorage.getItem('studentData');
+            if (stored) {
+                const loadedData = JSON.parse(stored);
+                Object.assign(data, loadedData);
+            } else {
+                initializeData();
+            }
+            displayOverviewData();
+            displayScheduleData();
+            displayPaymentData();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderCalendar();
+            initializeData();
+        });
+    </script>
+</body>
+</html>

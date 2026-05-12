@@ -1,0 +1,214 @@
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  min-height:100vh;
+  padding:20px;
+}
+
+/* ── Login ─────────────────────────────────────── */
+.login-wrap{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.login-box{
+  background:#fff;
+  padding:40px;
+  border-radius:15px;
+  box-shadow:0 10px 40px rgba(0,0,0,.3);
+  text-align:center;
+  width:100%;
+  max-width:400px;
+}
+.login-box h2{margin-bottom:30px;color:#333}
+.login-box input{
+  width:100%;padding:12px;margin-bottom:15px;
+  border:2px solid #ddd;border-radius:8px;font-size:16px;
+  transition:border-color .3s;
+}
+.login-box input:focus{outline:none;border-color:#667eea}
+.login-box .btn-primary{width:100%;padding:12px;font-size:16px;font-weight:bold}
+.login-error{color:#e74c3c;margin-bottom:15px;font-size:14px;display:none}
+.login-error.show{display:block}
+
+/* ── Buttons ───────────────────────────────────── */
+.btn-primary{
+  background:#667eea;color:#fff;border:none;
+  padding:10px 20px;border-radius:8px;font-size:14px;
+  font-weight:600;cursor:pointer;transition:background .3s;
+}
+.btn-primary:hover{background:#764ba2}
+.btn-success{background:#27ae60;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:background .3s}
+.btn-success:hover{background:#229954}
+.btn-danger{background:#e74c3c;color:#fff;border:none;padding:8px 14px;border-radius:6px;font-size:13px;cursor:pointer;transition:background .3s}
+.btn-danger:hover{background:#c0392b}
+.btn-secondary{background:#95a5a6;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:14px;cursor:pointer;transition:background .3s}
+.btn-secondary:hover{background:#7f8c8d}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:5px}
+
+/* ── Layout ────────────────────────────────────── */
+.container{max-width:1200px;margin:0 auto}
+.header{
+  background:#fff;padding:25px 30px;border-radius:15px;
+  margin-bottom:25px;box-shadow:0 4px 15px rgba(0,0,0,.1);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;
+}
+.header h1{color:#333;font-size:26px}
+.header-right{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+.level-badge{
+  background:#667eea;color:#fff;padding:5px 15px;
+  border-radius:20px;font-weight:bold;font-size:14px;
+}
+.user-meta{color:#666;font-size:14px;line-height:1.6}
+
+/* ── Tabs ──────────────────────────────────────── */
+.tabs{display:flex;gap:10px;margin-bottom:25px;flex-wrap:wrap}
+.tab-btn{
+  background:#fff;border:2px solid #ddd;padding:11px 18px;
+  border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;
+  transition:all .3s;color:#666;
+}
+.tab-btn:hover{border-color:#667eea;color:#667eea}
+.tab-btn.active{background:#667eea;color:#fff;border-color:#667eea}
+
+/* ── Cards ─────────────────────────────────────── */
+.card{
+  background:#fff;padding:25px;border-radius:12px;
+  box-shadow:0 4px 15px rgba(0,0,0,.1);margin-bottom:20px;
+}
+.card h3{
+  color:#333;margin-bottom:20px;font-size:20px;
+  border-bottom:2px solid #667eea;padding-bottom:10px;
+}
+.card h4{color:#667eea;margin:15px 0 10px}
+
+/* ── Info boxes ────────────────────────────────── */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px}
+.info-box{background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #667eea}
+.info-box label{display:block;color:#999;font-size:12px;margin-bottom:5px;text-transform:uppercase}
+.info-box .value{font-size:18px;font-weight:bold;color:#333}
+.info-box .sub{color:#999;font-size:12px;margin-top:5px}
+.info-box .sub.accent{color:#667eea;font-weight:bold}
+
+/* ── Progress ──────────────────────────────────── */
+.progress-section{background:#f8f9fa;padding:20px;border-radius:8px;margin-top:15px}
+.progress-bar{
+  width:100%;height:30px;background:#e0e0e0;border-radius:15px;
+  overflow:hidden;margin:15px 0;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,#667eea 0%,#764ba2 100%);
+  transition:width .5s ease;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:bold;font-size:12px;
+}
+.progress-label{text-align:center;color:#666;font-size:14px;margin-bottom:10px}
+.progress-stats{color:#666;font-size:14px;text-align:center}
+
+/* ── Calendar ──────────────────────────────────── */
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:15px}
+.calendar-header{
+  grid-column:1/-1;text-align:center;
+  font-weight:bold;color:#667eea;font-size:18px;margin-bottom:5px;
+}
+.day-name{text-align:center;font-weight:bold;color:#999;font-size:12px}
+.calendar-day{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border:2px solid #ddd;border-radius:8px;font-size:14px;
+  background:#f9f9f9;color:#999;
+}
+.calendar-day.has-class{
+  background:#667eea;color:#fff;font-weight:bold;
+  border-color:#667eea;box-shadow:0 2px 8px rgba(102,126,234,.3);
+}
+
+/* ── Checklist ─────────────────────────────────── */
+.checklist-item{
+  display:flex;align-items:center;padding:11px 12px;
+  background:#f9f9f9;border-radius:6px;margin-bottom:7px;
+}
+.checklist-item input[type=checkbox]{
+  width:18px;height:18px;margin-right:12px;
+  cursor:pointer;accent-color:#667eea;flex-shrink:0;
+}
+.checklist-item label{flex:1;cursor:pointer;user-select:none;font-size:14px}
+.checklist-item input[type=checkbox]:checked+label{color:#bbb;text-decoration:line-through}
+.subcategory{margin-left:20px;padding-left:15px;border-left:2px solid #ddd}
+.subcategory-title{font-weight:600;color:#667eea;padding:10px 0;margin-top:8px;font-size:15px}
+
+/* ── Table ─────────────────────────────────────── */
+.table{width:100%;border-collapse:collapse;margin-top:15px;font-size:14px}
+.table th,.table td{padding:11px 12px;text-align:left;border-bottom:1px solid #eee}
+.table th{background:#f5f5f5;font-weight:600;color:#667eea}
+.table tr:hover td{background:#fafafa}
+
+/* ── Edit section ──────────────────────────────── */
+.edit-panel{
+  background:#f8f9fa;padding:20px;border-radius:8px;
+  margin-top:15px;border:1px solid #e0e0e0;
+}
+.edit-panel h4{margin-bottom:15px;color:#333}
+.form-row{margin-bottom:12px}
+.form-row label{display:block;font-size:13px;color:#666;margin-bottom:4px}
+.form-row input,.form-row textarea,.form-row select{
+  width:100%;padding:9px 11px;border:1px solid #ddd;
+  border-radius:6px;font-family:inherit;font-size:14px;
+  transition:border-color .2s;
+}
+.form-row input:focus,.form-row textarea:focus{outline:none;border-color:#667eea}
+.form-row textarea{height:90px;resize:vertical}
+.form-actions{display:flex;gap:10px;margin-top:5px;flex-wrap:wrap}
+
+/* ── Admin page ────────────────────────────────── */
+.admin-header{
+  background:#fff;padding:20px 30px;border-radius:12px;
+  margin-bottom:20px;box-shadow:0 4px 15px rgba(0,0,0,.1);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+}
+.admin-header h1{font-size:22px;color:#333}
+.students-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:15px;
+  margin-bottom:25px;
+}
+.student-card{
+  background:#fff;padding:20px;border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,.08);
+  display:flex;flex-direction:column;gap:10px;
+  border:2px solid transparent;transition:border-color .2s;
+}
+.student-card:hover{border-color:#667eea}
+.student-card h3{color:#333;font-size:16px}
+.student-card .login-text{color:#999;font-size:13px}
+.student-card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
+
+/* ── Toast ─────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:30px;right:30px;
+  background:#27ae60;color:#fff;padding:12px 22px;
+  border-radius:8px;font-size:14px;box-shadow:0 4px 15px rgba(0,0,0,.2);
+  z-index:9999;opacity:0;transform:translateY(10px);
+  transition:opacity .3s,transform .3s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.error{background:#e74c3c}
+
+/* ── Back button ───────────────────────────────── */
+.back-btn{
+  background:#fff;border:2px solid #667eea;color:#667eea;
+  padding:8px 16px;border-radius:8px;cursor:pointer;
+  font-size:14px;font-weight:600;transition:all .3s;
+}
+.back-btn:hover{background:#667eea;color:#fff}
+
+/* ── Responsive ────────────────────────────────── */
+@media(max-width:768px){
+  body{padding:10px}
+  .header{flex-direction:column;align-items:flex-start}
+  .tabs{flex-direction:column}
+  .tab-btn{width:100%;text-align:left}
+  .students-grid{grid-template-columns:1fr}
+}
