@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: diana-student-cabinet
+    env: node
+    branch: master
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: NODE_ENV
+        value: production
