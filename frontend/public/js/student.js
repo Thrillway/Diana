@@ -131,11 +131,20 @@ async function renderStudentCabinet(viewer, target, onBack) {
     c.appendChild(progressCard);
 
     function updateProgressDisplay() {
+      // Считаем выполненные из данных
       const gr = Object.values(data.grammar).filter(Boolean).length;
       const vc = Object.values(data.vocabulary).filter(Boolean).length;
       const st = Object.values(data.strategies).filter(Boolean).length;
       const done = gr + vc + st;
-      const total = Object.keys(data.grammar).length + Object.keys(data.vocabulary).length + Object.keys(data.strategies).length;
+
+      // Считаем total из статических тем (не из data-объектов, иначе 0 пока не кликнут)
+      let totalGrammar = 0;
+      Object.values(GRAMMAR_TOPICS).forEach(items => { totalGrammar += items.length; });
+      const totalVocab = Object.keys(VOCABULARY_TOPICS).length;
+      let totalStrategies = 0;
+      Object.values(STRATEGIES_TOPICS).forEach(section => { totalStrategies += Object.keys(section).length; });
+      const total = totalGrammar + totalVocab + totalStrategies;
+
       const pct = total > 0 ? Math.round(done / total * 100) : 0;
       progLabel.innerHTML = `Прогресс обучения: <strong>${pct}%</strong>`;
       progFill.style.width = pct + '%';
